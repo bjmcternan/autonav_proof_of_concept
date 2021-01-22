@@ -30,7 +30,16 @@ def main():
                 if event.key == pg.K_KP5:
                     rInc = 0
                     lInc = 0
-                
+        if(lInc > 1):
+            lInc = 1
+        elif(lInc < -1):
+            lInc = -1
+
+        if(rInc > 1):
+            rInc = 1
+        elif(rInc < -1):
+            rInc = -1
+        
         playersprite.update(lInc, rInc)
 
         screen.fill((30, 30, 30))
