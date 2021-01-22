@@ -1,5 +1,5 @@
 MAX_ACCEL = 3
-MAX_SPEED = 10
+MAX_SPEED = 2
 
 class Encoder():
   distancePrev = 0
@@ -18,7 +18,6 @@ class Encoder():
     self.distancePrev = self.distance 
     
     #set speed
-    self.speed += self.accel
     if(self.speed > MAX_SPEED):
       self.speed = MAX_SPEED
     
@@ -31,6 +30,13 @@ class Encoder():
     
   def getDistanceTraveled(self):
     return self.distance - self.distancePrev
+  
+  def setSpeedPower(self, power):
+    if(power > 1):
+      power = 1
+    elif(power < -1):
+      power = -1
+    self.speed = MAX_SPEED * power
   
   def getSpeed(self):
     return self.speed

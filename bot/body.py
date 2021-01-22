@@ -34,13 +34,14 @@ class Player(pg.sprite.Sprite):
     
     #init self variables
     self.x, self.y = pos
-    self.psi = psi
+    self.psi = psi * (math.pi / 180)
     
     #init image
     self.image = pg.Surface((BOT_BASE, BOT_HEIGHT), pg.SRCALPHA)
     pg.draw.polygon(self.image, (50, 120, 180), self.polyPoints)
     self.original_image = self.image
     self.rect = self.image.get_rect(center=pos)
+    self.image = pg.transform.rotozoom(self.original_image, -(self.psi*(180/math.pi)), 1)
 
   def move(self):
     #save old values
@@ -73,16 +74,16 @@ class Player(pg.sprite.Sprite):
     
     #update image
     self.image = pg.transform.rotozoom(self.original_image, -(self.psi*(180/math.pi)), 1)
+    self.rect.center = (self.x, self.y)
     # Create a new rect with the center of the old rect.
     self.rect = self.image.get_rect(center=self.rect.center)
     
   def update(self, lInc, rInc):
-    self.encL.accelerate(lInc)
-    self.encR.accelerate(rInc)
+    self.encL.setSpeedPower(lInc)
+    self.encR.setSpeedPower(rInc)
     self.encL.update()
     self.encR.update()
     self.move()
-    self.rect.center = (self.x,self.y)
     # Update the position vector and the rect.
     #self.position += self.direction * self.speed
     #self.rect.center = self.position
