@@ -19,7 +19,8 @@ def main():
             if event.type == pg.QUIT:
                 done = True
             if event.type == pg.MOUSEBUTTONUP:
-                player.add_coordinate(pg.mouse.get_pos())
+                x, y = pg.mouse.get_pos()
+                player.add_coordinate(x, y, 0)
             if event.type == pg.KEYDOWN:
                 if event.key == pg.K_KP7:
                     lInc += .2

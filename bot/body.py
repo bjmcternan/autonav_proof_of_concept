@@ -42,6 +42,16 @@ class Body():
   def get_psi(self):
     return self.psi
 
+  # get_velocity(self)
+  # returns the current velocity (vL + vR)/2
+  def get_velocity(self):
+    return ((self.enc_l.get_speed() + self.enc_r.get_speed())/2)
+
+  # get_wheelbase(self)
+  # returns the length of the wheelbase
+  def get_wheelbase(self):
+    return BOT_BASE
+
   # get_body_specs(self)
   # returns a list of body polygon points
   def get_body_specs(self):
@@ -56,15 +66,18 @@ class Body():
   # update(self)
   # update function to update controls
   def update(self):
+    self.update_current_position()
     self.brain.update()
+    (vl, vr) = self.brain.calculate_velocity()
+    self.enc_l.set_power(vl)
+    self.enc_r.set_power(vr)
     self.enc_l.update()
     self.enc_r.update()
-    self.update_current_position()
-  
+    
   # add_coordinate(self, pos)
   # Pass new coordinate to brain
-  def add_coordinate(self, pos):
-    self.brain.add_coordinate(pos)
+  def add_coordinate(self, x, y, psi):
+    self.brain.add_coordinate(x, y, psi)
 
   # update_current_position(self)
   # Use kinematics to keep update current position
@@ -75,8 +88,8 @@ class Body():
     psi_old = self.psi
     
     #get distance traveled
-    del_left = self.enc_l.getDistanceTraveled()
-    del_right = self.enc_r.getDistanceTraveled()
+    del_left = self.enc_l.get_distance_traveled()
+    del_right = self.enc_r.get_distance_traveled()
     
     #Calculate new attitude angle
     del_psi = (del_left - del_right) / BOT_BASE

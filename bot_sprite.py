@@ -38,5 +38,5 @@ class Player(pg.sprite.Sprite):
 
   # add_coordinate(self, pos)
   # Pass new coordinate to body
-  def add_coordinate(self, pos):
-    self.body.add_coordinate(pos)
+  def add_coordinate(self, x, y, psi):
+    self.body.add_coordinate(x, y, psi)
