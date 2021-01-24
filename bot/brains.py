@@ -1,11 +1,25 @@
-class Bot_Brains():
-  velL = 0
-  velR = 0
-  def __init__(self, x, y, psi):
-      super(Bot_Brains, self).__init__()
+import math
+
+class Brains(): 
+  body = None
+  x = 0
+  y = 0
+  psi = 0
+  current_target_pos = None
+  target_coordinates = []
+
+  def __init__(self, x, y, psi, body):
+      self.body = body
       self.x = x
       self.y = y
       self.psi = psi
       
-  def getVelocityPower(self):
-    return (self.velL, self.velR)
+  def add_coordinate(self, pos):
+    self.target_coordinates.append(pos)
+
+  def update(self):
+    #No current target but there is another in the list
+    if((self.current_target_pos == None) and (len(self.target_coordinates) != 0)):
+      #Pop next coordinate from list and set as current target
+      self.current_target_pos = self.target_coordinates.pop(0)
+    

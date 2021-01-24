@@ -1,6 +1,6 @@
 import math
 import pygame as pg
-from bot.brains import Bot_Brains
+from bot.brains import Brains
 from bot.encoder import Encoder
 from pygame.math import Vector2
 
@@ -10,80 +10,89 @@ BOT_HEIGHT_HALF = BOT_HEIGHT/2
 BOT_BASE = 80
 BOT_BASE_HALF = BOT_BASE/2
 
-class Player(pg.sprite.Sprite):
-  x = 0
-  y = 0
-  psi = 0
-  polyPoints = [
+# Body
+# Controls the body of the robot
+class Body():
+  x = None
+  y = None
+  psi = None
+  brain = None
+  enc_l = None
+  enc_r = None
+
+  # __init__(self, pos, psi)
+  # takes initial position and psi (heading)
+  def __init__(self, pos, psi):
+    #init encoders
+    self.enc_l = Encoder()
+    self.enc_r = Encoder()
+    self.x, self.y = pos
+    self.psi = psi
+    
+    #init brain
+    self.brain = Brains(self.x, self.y, self.psi, self)
+
+  # get_pos(self)
+  # gets current position
+  def get_pos(self):
+    return (self.x, self.y)
+  
+  # get_psi(self)
+  # gets current psi
+  def get_psi(self):
+    return self.psi
+
+  # get_body_specs(self)
+  # returns a list of body polygon points
+  def get_body_specs(self):
+    return_points = [
       (0,0),
       (BOT_BASE,0),
       (0,BOT_HEIGHT),
       (BOT_BASE, BOT_HEIGHT)
     ]
-  
-  def __init__(self, pos=(420, 420), psi=(0)):
-    #init super
-    super(Player, self).__init__()
-    
-    #init encoders
-    self.encL = Encoder()
-    self.encR = Encoder()
-    
-    #init brain
-    self.brain = Bot_Brains(self.x, self.y, self.psi)
-    
-    #init self variables
-    self.x, self.y = pos
-    self.psi = psi * (math.pi / 180)
-    
-    #init image
-    self.image = pg.Surface((BOT_BASE, BOT_HEIGHT), pg.SRCALPHA)
-    pg.draw.polygon(self.image, (50, 120, 180), self.polyPoints)
-    self.original_image = self.image
-    self.rect = self.image.get_rect(center=pos)
-    self.image = pg.transform.rotozoom(self.original_image, -(self.psi*(180/math.pi)), 1)
+    return (return_points)
 
-  def move(self):
+  # update(self)
+  # update function to update controls
+  def update(self):
+    self.brain.update()
+    self.enc_l.update()
+    self.enc_r.update()
+    self.update_current_position()
+  
+  # add_coordinate(self, pos)
+  # Pass new coordinate to brain
+  def add_coordinate(self, pos):
+    self.brain.add_coordinate(pos)
+
+  # update_current_position(self)
+  # Use kinematics to keep update current position
+  def update_current_position(self):
     #save old values
     x_old = self.x
     y_old = self.y
     psi_old = self.psi
     
     #get distance traveled
-    dLeft = self.encL.getDistanceTraveled()
-    dRight = self.encR.getDistanceTraveled()
+    del_left = self.enc_l.getDistanceTraveled()
+    del_right = self.enc_r.getDistanceTraveled()
     
     #Calculate new attitude angle
-    delPsi = (dLeft - dRight) / BOT_BASE
+    del_psi = (del_left - del_right) / BOT_BASE
     
     #Compute average distance traveled
-    dAve = (dLeft + dRight) / 2
+    del_ave = (del_left + del_right) / 2
     
     #Compute incremental field position with correction
-    c1 = (1 - (delPsi * delPsi) / 6)
-    c2 = delPsi / 2;
-    cPsi = math.cos(psi_old)
-    sPsi = math.sin(psi_old)
-    delX = dAve * (c1*cPsi - c2*sPsi)
-    delY = dAve * (c1*sPsi - c2*cPsi)
+    c1 = (1 - (del_psi * del_psi) / 6)
+    c2 = del_psi / 2;
+    cos_psi = math.cos(psi_old)
+    sin_psi = math.sin(psi_old)
+    del_x = del_ave * (c1*cos_psi - c2*sin_psi)
+    del_y = del_ave * (c1*sin_psi - c2*cos_psi)
     
     #update position
-    self.x = x_old + delX
-    self.y = y_old + delY
-    self.psi = psi_old + delPsi
-    
-    #update image
-    self.image = pg.transform.rotozoom(self.original_image, -(self.psi*(180/math.pi)), 1)
-    self.rect.center = (self.x, self.y)
-    # Create a new rect with the center of the old rect.
-    self.rect = self.image.get_rect(center=self.rect.center)
-    
-  def update(self, lInc, rInc):
-    self.encL.setSpeedPower(lInc)
-    self.encR.setSpeedPower(rInc)
-    self.encL.update()
-    self.encR.update()
-    self.move()
-    # Update the position vector and the rect.
-    #self.position += self.direction * self.speed
-    #self.rect.center = self.position
+    self.x = x_old + del_x
+    self.y = y_old + del_y
+    self.psi = psi_old + del_psi
