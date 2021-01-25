@@ -1,7 +1,7 @@
 import math
 
 DEFAULT_V = .5
-ACCEPTABLE_DISTANCE_DELTA = .1
+ACCEPTABLE_DISTANCE_DELTA = 10
 K1 = 1
 K2 = 3
 THETA_TARGET_CONSTANT = 57.3
@@ -36,7 +36,7 @@ class Brains():
       #calculate distance to target position
       current_pos = self.body.get_pos()
       delta_x = self.current_target_pos[0] - current_pos[0]
-      delta_y = current_pos[1] - self.current_target_pos[1] 
+      delta_y = self.current_target_pos[1] - current_pos[1] 
       rr = math.sqrt(delta_x**2 + delta_y**2) #distance left to target position
       
       if(rr <= ACCEPTABLE_DISTANCE_DELTA):
@@ -49,16 +49,19 @@ class Brains():
         if(vv == 0):
           #Current speed is 0 so need to set to default???
           vv = DEFAULT_V
-        r_angle = math.atan2( delta_y, delta_x)
+          
+        r_angle = math.atan2(delta_y, delta_x)
+        
         theta_target = (self.current_target_pos[2] / THETA_TARGET_CONSTANT) - r_angle
         theta_target = self.limit(theta_target, THETA_TARGET_MIN, THETA_TARGET_MAX)
-
-        delta_r = (self.body.get_psi()/THETA_TARGET_CONSTANT) - r_angle
+        
+        delta_r = (self.body.get_psi() / THETA_TARGET_CONSTANT) - r_angle
         delta_r = self.limit(delta_r, THETA_TARGET_MIN, THETA_TARGET_MAX)
-        omega_des = -(vv/rr) * (K2 * (delta_r - math.atan(-K1*theta_target)) + math.sin(delta_r) * (1+(K1/ (1+(K1*theta_target)**2))))
+        
+        omega_des = -(vv/rr) * (K2 * (delta_r - math.atan(-K1*theta_target)) + math.sin(delta_r) * (1 + (K1 / (1 + ((K1 * theta_target)**2)))))
 
-        vl = vv - (self.wheelbase / 2) * omega_des
-        vr = vv + (self.wheelbase / 2) * omega_des
+        vl = vv + ((self.wheelbase / 2) * omega_des)
+        vr = vv - ((self.wheelbase / 2) * omega_des)
 
     return (vl,vr)
 

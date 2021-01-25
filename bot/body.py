@@ -5,10 +5,8 @@ from bot.encoder import Encoder
 from pygame.math import Vector2
 
 BOT_NOSE_LEN = 10
-BOT_HEIGHT = 40
-BOT_HEIGHT_HALF = BOT_HEIGHT/2
-BOT_BASE = 80
-BOT_BASE_HALF = BOT_BASE/2
+BOT_LENGTH = 40
+BOT_WIDTH = 80
 
 # Body
 # Controls the body of the robot
@@ -50,16 +48,17 @@ class Body():
   # get_wheelbase(self)
   # returns the length of the wheelbase
   def get_wheelbase(self):
-    return BOT_BASE
+    return BOT_WIDTH
 
   # get_body_specs(self)
   # returns a list of body polygon points
   def get_body_specs(self):
     return_points = [
       (0,0),
-      (BOT_BASE,0),
-      (0,BOT_HEIGHT),
-      (BOT_BASE, BOT_HEIGHT)
+      (BOT_LENGTH,0),
+      (BOT_LENGTH + BOT_NOSE_LEN, BOT_WIDTH/2),
+      (BOT_LENGTH, BOT_WIDTH),
+      (0,BOT_WIDTH),
     ]
     return (return_points)
 
@@ -92,7 +91,7 @@ class Body():
     del_right = self.enc_r.get_distance_traveled()
     
     #Calculate new attitude angle
-    del_psi = (del_left - del_right) / BOT_BASE
+    del_psi = (del_left - del_right) / BOT_WIDTH
     
     #Compute average distance traveled
     del_ave = (del_left + del_right) / 2
@@ -103,7 +102,7 @@ class Body():
     cos_psi = math.cos(psi_old)
     sin_psi = math.sin(psi_old)
     del_x = del_ave * (c1*cos_psi - c2*sin_psi)
-    del_y = del_ave * (c1*sin_psi - c2*cos_psi)
+    del_y = del_ave * (c1*sin_psi + c2*cos_psi)
     
     #update position
     self.x = x_old + del_x

@@ -1,6 +1,6 @@
 import math
 import pygame as pg
-from bot.body import Body
+from bot.body import BOT_LENGTH, BOT_NOSE_LEN, BOT_WIDTH, Body
 
 # Player(pg.sprite.Sprite)
 # responsible for keeping track of sprite
@@ -21,7 +21,7 @@ class Player(pg.sprite.Sprite):
     bot_width, bot_height = max(self.polyPoints)
 
     #init image
-    self.image = pg.Surface((bot_width, bot_height), pg.SRCALPHA)
+    self.image = pg.Surface((BOT_LENGTH+BOT_NOSE_LEN, BOT_WIDTH), pg.SRCALPHA)
     pg.draw.polygon(self.image, (50, 120, 180), self.polyPoints)
     self.original_image = self.image
     self.rect = self.image.get_rect(center=self.body.get_pos())

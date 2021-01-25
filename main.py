@@ -45,7 +45,7 @@ def main():
         
         playersprite.update()
 
-        screen.fill((30, 30, 30))
+        screen.fill((255, 255, 255))
         playersprite.draw(screen)
         pg.display.flip()
 
