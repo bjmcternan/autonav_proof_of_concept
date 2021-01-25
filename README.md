@@ -1,5 +1,5 @@
 # Automatic Navigation Proof of Concept
-This code tries to simulate a robot by having the following components:
+This code tries to simulate robot path planning. The robot will attempt to move to the location of the mouse cursor when a user clicks on the screen. Many points can be added at any time and are stored in a FIFO queue 
 
 In the bot folder:
 ## Body
