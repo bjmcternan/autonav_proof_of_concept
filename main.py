@@ -1,7 +1,7 @@
 import math
 import pygame as pg
 from pygame.math import Vector2
-from bot.body import Player
+from bot_sprite import Player
 
 def main():
     lInc = 0
@@ -18,6 +18,9 @@ def main():
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 done = True
+            if event.type == pg.MOUSEBUTTONUP:
+                x, y = pg.mouse.get_pos()
+                player.add_coordinate(x, y, 0)
             if event.type == pg.KEYDOWN:
                 if event.key == pg.K_KP7:
                     lInc += .2
@@ -40,9 +43,9 @@ def main():
         elif(rInc < -1):
             rInc = -1
         
-        playersprite.update(lInc, rInc)
+        playersprite.update()
 
-        screen.fill((30, 30, 30))
+        screen.fill((255, 255, 255))
         playersprite.draw(screen)
         pg.display.flip()
 
