@@ -1,4 +1,4 @@
-# bot_movement
+# Automatic Navigation Proof of Concept
 This code tries to simulate a robot by having the following components:
 
 In the bot folder:
