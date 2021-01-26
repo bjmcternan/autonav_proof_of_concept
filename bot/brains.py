@@ -61,16 +61,16 @@ class Brains():
         
         delta_r = (self.body.get_psi() / RAD_TO_DEGREES_CONSTANT) - r_angle
         delta_r = self.limit(delta_r, THETA_TARGET_MIN, THETA_TARGET_MAX)
-        
         omega_des = -(vv/rr) * (K2 * (delta_r - math.atan(-K1*theta_target)) + math.sin(delta_r) * (1 + (K1 / (1 + ((K1 * theta_target)**2)))))
-        self.r = rr
-        self.omega = omega_des
+        
         vl = vv + ((self.wheelbase / 2) * omega_des)
         vr = vv - ((self.wheelbase / 2) * omega_des)
-        #vl = vl/(vl+vr)
-        #vr = vr/(vl+vr)
+        
+        #Save data so it can be printed
         self.vl = vl
         self.vr = vr
+        self.r = rr
+        self.omega = omega_des
 
     return (vl,vr) 
     

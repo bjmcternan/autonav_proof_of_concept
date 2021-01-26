@@ -42,7 +42,19 @@ class Player(pg.sprite.Sprite):
     self.body.add_coordinate(x, y, psi)
     
   def get_text(self):
-    return "x: " + str(self.body.x) + "\n"     +\
+    if(self.body.brain.current_target_pos == None):
+      tx = 0
+      ty = 0
+      tp = 0
+    else:
+      tx = self.body.brain.current_target_pos[0]
+      ty = self.body.brain.current_target_pos[1]
+      tp = self.body.brain.current_target_pos[2]
+      
+    return "target x: " + str(tx) + "\n"     +\
+           "target y: " + str(ty) + "\n"     +\
+           "target p: " + str(tp) + "\n"     +\
+           "x: " + str(self.body.x) + "\n"     +\
            "y: " + str(self.body.y) + "\n"     +\
            "p: " + str(self.body.psi) + "\n"   +\
            "r: " + str(self.body.r) + "\n"     +\
