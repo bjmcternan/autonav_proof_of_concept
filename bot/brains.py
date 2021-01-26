@@ -1,10 +1,10 @@
 import math
 
-DEFAULT_V = .5
+DEFAULT_V = 1
 ACCEPTABLE_DISTANCE_DELTA = 10
 K1 = 1
 K2 = 3
-THETA_TARGET_CONSTANT = 57.3
+RAD_TO_DEGREES_CONSTANT = 57.3
 THETA_TARGET_MAX = math.pi
 THETA_TARGET_MIN = -math.pi
 
@@ -16,6 +16,10 @@ class Brains():
 
   def __init__(self, x, y, psi, body):
       self.body = body
+      self.r = 0
+      self.omega = 0
+      self.vl = 0
+      self.vr = 0
       self.wheelbase = self.body.get_wheelbase()
       
   def add_coordinate(self, x, y, psi):
@@ -52,19 +56,24 @@ class Brains():
           
         r_angle = math.atan2(delta_y, delta_x)
         
-        theta_target = (self.current_target_pos[2] / THETA_TARGET_CONSTANT) - r_angle
+        theta_target = (self.current_target_pos[2] / RAD_TO_DEGREES_CONSTANT) - r_angle
         theta_target = self.limit(theta_target, THETA_TARGET_MIN, THETA_TARGET_MAX)
         
-        delta_r = (self.body.get_psi() / THETA_TARGET_CONSTANT) - r_angle
+        delta_r = (self.body.get_psi() / RAD_TO_DEGREES_CONSTANT) - r_angle
         delta_r = self.limit(delta_r, THETA_TARGET_MIN, THETA_TARGET_MAX)
         
         omega_des = -(vv/rr) * (K2 * (delta_r - math.atan(-K1*theta_target)) + math.sin(delta_r) * (1 + (K1 / (1 + ((K1 * theta_target)**2)))))
-
+        self.r = rr
+        self.omega = omega_des
         vl = vv + ((self.wheelbase / 2) * omega_des)
         vr = vv - ((self.wheelbase / 2) * omega_des)
+        #vl = vl/(vl+vr)
+        #vr = vr/(vl+vr)
+        self.vl = vl
+        self.vr = vr
 
-    return (vl,vr)
-
+    return (vl,vr) 
+    
   def update(self):
     #No current target but there is another in the list
     if((self.current_target_pos == None) and (len(self.target_coordinates) != 0)):

@@ -26,6 +26,8 @@ class Body():
     self.enc_r = Encoder()
     self.x, self.y = pos
     self.psi = psi
+    self.r = 0
+    self.omega = 0
     
     #init brain
     self.brain = Brains(self.x, self.y, self.psi, self)
@@ -61,13 +63,15 @@ class Body():
       (0,BOT_WIDTH),
     ]
     return (return_points)
-
+    
   # update(self)
   # update function to update controls
   def update(self):
     self.update_current_position()
     self.brain.update()
     (vl, vr) = self.brain.calculate_velocity()
+    self.omega = self.brain.omega
+    self.r = self.brain.r
     self.enc_l.set_power(vl)
     self.enc_r.set_power(vr)
     self.enc_l.update()

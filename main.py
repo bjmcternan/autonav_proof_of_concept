@@ -3,14 +3,19 @@ import pygame as pg
 from pygame.math import Vector2
 from bot_sprite import Player
 
+white = (255, 255, 255)
+green = (0, 255, 0)
+blue = (0, 0, 128)
+            
 def main():
     lInc = 0
     rInc = 0
     pg.init()
+    
     screen = pg.display.set_mode((1280, 720))
     player = Player((420, 420),0)
     playersprite = pg.sprite.RenderPlain((player))
-
+    
     clock = pg.time.Clock()
     done = False
     while not done:
@@ -47,8 +52,13 @@ def main():
 
         screen.fill((255, 255, 255))
         playersprite.draw(screen)
-        pg.display.flip()
-
+        
+        font = pg.font.Font('freesansbold.ttf', 14)
+        lines = player.get_text().splitlines()
+        for i, l in enumerate(lines):
+            screen.blit(font.render(l, 0, (0,0,0)), (1000, 600 + 12*i))
+        pg.display.flip()    
+        
 if __name__ == '__main__':
     main()
     pg.quit()

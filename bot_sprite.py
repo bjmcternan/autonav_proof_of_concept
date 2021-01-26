@@ -40,3 +40,12 @@ class Player(pg.sprite.Sprite):
   # Pass new coordinate to body
   def add_coordinate(self, x, y, psi):
     self.body.add_coordinate(x, y, psi)
+    
+  def get_text(self):
+    return "x: " + str(self.body.x) + "\n"     +\
+           "y: " + str(self.body.y) + "\n"     +\
+           "p: " + str(self.body.psi) + "\n"   +\
+           "r: " + str(self.body.r) + "\n"     +\
+           "w: " + str(self.body.omega) + "\n" +\
+           "vl: " + str(self.body.brain.vl) + "\n" +\
+           "vr: " + str(self.body.brain.vr) + "\n"
