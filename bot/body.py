@@ -72,8 +72,8 @@ class Body():
     (vl, vr) = self.brain.calculate_velocity()
     self.omega = self.brain.omega
     self.r = self.brain.r
-    self.enc_l.set_power(vl)
-    self.enc_r.set_power(vr)
+    self.enc_l.set_speed(vl)
+    self.enc_r.set_speed(vr)
     self.enc_l.update()
     self.enc_r.update()
     

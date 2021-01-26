@@ -47,3 +47,12 @@ class Encoder():
   # returns the current speed
   def get_speed(self):
     return self.speed
+
+  # set_speed(self)
+  # sets the current speed
+  def set_speed(self, speed):
+    if(speed > MAX_SPEED):
+      speed = MAX_SPEED
+    else:
+      self.speed = speed
+  
