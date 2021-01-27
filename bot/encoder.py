@@ -1,7 +1,8 @@
 MAX_ACCEL = 3
-MAX_SPEED = 2
+MAX_SPEED = 20
 
 class Encoder():
+  tick_ms = 60
   distance_prev = 0
   distance = 0
   speed = 0
@@ -9,7 +10,8 @@ class Encoder():
   
   # __init__(self)
   # Initializes the encoder
-  def __init__(self):
+  def __init__(self, tick_ms):
+    self.tick_ms = tick_ms
     self.distance_prev = 0
     self.distance = 0
     self.speed = 0

@@ -1,12 +1,12 @@
 import math
 
-DEFAULT_V = 1
+DEFAULT_V = 5
 ACCEPTABLE_DISTANCE_DELTA = 10
 K1 = 1
 K2 = 3
 RAD_TO_DEGREES_CONSTANT = 57.3
-THETA_TARGET_MAX = math.pi
-THETA_TARGET_MIN = -math.pi
+THETA_LIMIT = math.pi
+
 
 class Brains(): 
   body = None
@@ -25,12 +25,11 @@ class Brains():
   def add_coordinate(self, x, y, psi):
     self.target_coordinates.append((x, y, psi))
 
-  def limit(self, n, min, max):
-    if(n < min):
-      n = min
-    elif(n > max):
-      n=max
-    return n
+  def limit(self, n, mod):
+    ret = n % mod
+    if(n < 0):
+      ret = -ret
+    return ret
 
   def calculate_velocity(self):
     vl = 0
@@ -54,13 +53,13 @@ class Brains():
           #Current speed is 0 so need to set to default???
           vv = DEFAULT_V
           
-        r_angle = math.atan2(delta_y, delta_x)
+        r_angle = math.atan2(delta_x, delta_y)
         
         theta_target = (self.current_target_pos[2] / RAD_TO_DEGREES_CONSTANT) - r_angle
-        theta_target = self.limit(theta_target, THETA_TARGET_MIN, THETA_TARGET_MAX)
+        theta_target = self.limit(theta_target, THETA_LIMIT)
         
         delta_r = (self.body.get_psi() / RAD_TO_DEGREES_CONSTANT) - r_angle
-        delta_r = self.limit(delta_r, THETA_TARGET_MIN, THETA_TARGET_MAX)
+        delta_r = self.limit(delta_r, THETA_LIMIT)
         omega_des = -(vv/rr) * (K2 * (delta_r - math.atan(-K1*theta_target)) + math.sin(delta_r) * (1 + (K1 / (1 + ((K1 * theta_target)**2)))))
         
         vl = vv + ((self.wheelbase / 2) * omega_des)

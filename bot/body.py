@@ -20,14 +20,16 @@ class Body():
 
   # __init__(self, pos, psi)
   # takes initial position and psi (heading)
-  def __init__(self, pos, psi):
+  def __init__(self, pos, psi, tick_ms):
     #init encoders
-    self.enc_l = Encoder()
-    self.enc_r = Encoder()
+    self.enc_l = Encoder(tick_ms)
+    self.enc_r = Encoder(tick_ms)
     self.x, self.y = pos
     self.psi = psi
     self.r = 0
     self.omega = 0
+    # self.enc_l.set_speed(.5)
+    # self.enc_r.set_speed(1)
     
     #init brain
     self.brain = Brains(self.x, self.y, self.psi, self)
@@ -67,15 +69,16 @@ class Body():
   # update(self)
   # update function to update controls
   def update(self):
-    self.update_current_position()
+    self.enc_l.update()
+    self.enc_r.update()
     self.brain.update()
+    self.update_current_position()
     (vl, vr) = self.brain.calculate_velocity()
     self.omega = self.brain.omega
     self.r = self.brain.r
     self.enc_l.set_speed(vl)
     self.enc_r.set_speed(vr)
-    self.enc_l.update()
-    self.enc_r.update()
+    
     
   # add_coordinate(self, pos)
   # Pass new coordinate to brain
@@ -95,18 +98,11 @@ class Body():
     del_right = self.enc_r.get_distance_traveled()
     
     #Calculate new attitude angle
-    del_psi = (del_left - del_right) / BOT_WIDTH
+    del_psi = (del_left-del_right) / BOT_WIDTH
     
-    #Compute average distance traveled
-    del_ave = (del_left + del_right) / 2
-    
-    #Compute incremental field position with correction
-    c1 = (1 - (del_psi * del_psi) / 6)
-    c2 = del_psi / 2;
-    cos_psi = math.cos(psi_old)
-    sin_psi = math.sin(psi_old)
-    del_x = del_ave * (c1*cos_psi - c2*sin_psi)
-    del_y = del_ave * (c1*sin_psi + c2*cos_psi)
+    #Calculate new x,y position
+    del_x = ((del_left + del_right)/2) * math.cos(psi_old)
+    del_y = ((del_left + del_right)/2) * math.sin(psi_old)
     
     #update position
     self.x = x_old + del_x

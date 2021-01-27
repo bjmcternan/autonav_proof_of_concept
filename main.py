@@ -3,6 +3,8 @@ import pygame as pg
 from pygame.math import Vector2
 from bot_sprite import Player
 
+TICK_MS = 60
+
 white = (255, 255, 255)
 green = (0, 255, 0)
 blue = (0, 0, 128)
@@ -13,13 +15,13 @@ def main():
     pg.init()
     
     screen = pg.display.set_mode((1280, 720))
-    player = Player((420, 420),0)
+    player = Player((420, 720-420), 0, TICK_MS)
     playersprite = pg.sprite.RenderPlain((player))
     
     clock = pg.time.Clock()
     done = False
     while not done:
-        clock.tick(60)
+        clock.tick(TICK_MS)
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 done = True
