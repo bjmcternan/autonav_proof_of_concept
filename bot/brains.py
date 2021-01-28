@@ -24,12 +24,13 @@ class Brains():
       
   def add_coordinate(self, x, y, psi):
     self.target_coordinates.append((x, y, psi))
-
-  def limit(self, n, mod):
-    ret = n % mod
-    if(n < 0):
-      ret = -ret
-    return ret
+    
+  def limit(self, n):
+    while(n > math.pi):
+      n = n - 2 * math.pi
+    while(n < -math.pi):
+      n = n + 2 * math.pi
+    return n
 
   def calculate_velocity(self):
     vl = 0
@@ -53,17 +54,19 @@ class Brains():
           #Current speed is 0 so need to set to default???
           vv = DEFAULT_V
           
-        r_angle = math.atan2(delta_x, delta_y)
+        r_angle = math.atan2(delta_y, delta_x)
         
         theta_target = (self.current_target_pos[2] / RAD_TO_DEGREES_CONSTANT) - r_angle
-        theta_target = self.limit(theta_target, THETA_LIMIT)
+        theta_target = self.limit(theta_target)
         
         delta_r = (self.body.get_psi() / RAD_TO_DEGREES_CONSTANT) - r_angle
-        delta_r = self.limit(delta_r, THETA_LIMIT)
-        omega_des = -(vv/rr) * (K2 * (delta_r - math.atan(-K1*theta_target)) + math.sin(delta_r) * (1 + (K1 / (1 + ((K1 * theta_target)**2)))))
+        delta_r = self.limit(delta_r)
+        omega_des = -(vv/rr) * (K2 * (r_angle - math.atan(-K1*theta_target)) + math.sin(r_angle) * (1 + (K1 / (1 + ((K1 * theta_target)**2)))))
         
-        vl = vv + ((self.wheelbase / 2) * omega_des)
-        vr = vv - ((self.wheelbase / 2) * omega_des)
+        #delta_d = (vv/rr)*math.sin(self.body.psi)+omega_des
+        
+        vl = vv - ((self.wheelbase / 2) * omega_des)
+        vr = vv + ((self.wheelbase / 2) * omega_des)
         
         #Save data so it can be printed
         self.vl = vl

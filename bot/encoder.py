@@ -1,5 +1,5 @@
 MAX_ACCEL = 3
-MAX_SPEED = 20
+MAX_SPEED = 10
 
 class Encoder():
   tick_ms = 60
