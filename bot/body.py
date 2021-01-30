@@ -71,13 +71,15 @@ class Body():
   def update(self):
     self.enc_l.update()
     self.enc_r.update()
-    self.brain.update()
+    #self.brain.update()
     self.update_current_position()
-    (vl, vr) = self.brain.calculate_velocity()
-    self.omega = self.brain.omega
-    self.r = self.brain.r
-    self.enc_l.set_speed(vl)
-    self.enc_r.set_speed(vr)
+    #(vl, vr) = self.brain.calculate_velocity()
+    #self.omega = self.brain.omega
+    #self.r = self.brain.r
+    # self.enc_l.set_speed(vl)
+    # self.enc_r.set_speed(vr)
+    self.enc_l.set_speed(1)
+    self.enc_r.set_speed(.5)
     
     
   # add_coordinate(self, pos)
@@ -98,7 +100,7 @@ class Body():
     del_right = self.enc_r.get_distance_traveled()
     
     #Calculate new attitude angle
-    del_psi = (del_left-del_right) / BOT_WIDTH
+    del_psi = (del_right-del_left) / BOT_WIDTH
     
     #Calculate new x,y position
     del_x = ((del_left + del_right)/2) * math.cos(psi_old)
