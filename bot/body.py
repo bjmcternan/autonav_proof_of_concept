@@ -71,15 +71,13 @@ class Body():
   def update(self):
     self.enc_l.update()
     self.enc_r.update()
-    #self.brain.update()
+    self.brain.update()
     self.update_current_position()
-    #(vl, vr) = self.brain.calculate_velocity()
-    #self.omega = self.brain.omega
-    #self.r = self.brain.r
-    # self.enc_l.set_speed(vl)
-    # self.enc_r.set_speed(vr)
-    self.enc_l.set_speed(1)
-    self.enc_r.set_speed(.5)
+    (vl, vr) = self.brain.calculate_velocity()
+    self.omega = self.brain.omega
+    self.r = self.brain.r
+    self.enc_l.set_speed(vl)
+    self.enc_r.set_speed(vr)
     
     
   # add_coordinate(self, pos)
@@ -110,3 +108,4 @@ class Body():
     self.x = x_old + del_x
     self.y = y_old + del_y
     self.psi = psi_old + del_psi
+    self.psi = self.brain.limit(self.psi)

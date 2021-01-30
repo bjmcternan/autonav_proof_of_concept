@@ -55,10 +55,10 @@ def main():
         screen.fill((255, 255, 255))
         playersprite.draw(screen)
         
-        font = pg.font.Font('freesansbold.ttf', 14)
+        font = pg.font.Font('freesansbold.ttf', 20)
         lines = player.get_text().splitlines()
         for i, l in enumerate(lines):
-            screen.blit(font.render(l, 0, (0,0,0)), (1000, 600 + 12*i))
+            screen.blit(font.render(l, 0, (0,0,0)), (1000, 500 + 20*i))
         pg.display.flip()    
         
 if __name__ == '__main__':
